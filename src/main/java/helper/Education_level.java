@@ -1,12 +1,10 @@
 package helper;
 
 import java.io.File;
-import java.util.Scanner;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Scanner;
 
 /**
  * Stand-alone Java file for processing the database CSV files.
@@ -29,11 +27,11 @@ import java.sql.Statement;
  * @author Timothy Wiley, 2023. email: timothy.wiley@rmit.edu.au
 
  */
-public class VTPProcessCSV {
+public class Education_level {///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// no need change
 
    // MODIFY these to load/store to/from the correct locations
-   private static final String DATABASE = "jdbc:sqlite:database/vtp.db";
-   private static final String CSV_FILE = "database/lga_indigenous_status_by_age_by_sex_census_2016.csv";
+   private static final String DATABASE = "jdbc:sqlite:database/test.db";////////////////////////////////////////////////////////////////////////// FIX FILE NAME
+   private static final String CSV_FILE = "database/lga_non_school_education_by_indigenous_status_by_sex_census_2021.csv";///////////////////////////////////////// FIX CSV FILE 
 
 
    public static void main (String[] args) {
@@ -41,21 +39,13 @@ public class VTPProcessCSV {
       // The order of each array MUST match the order of the CSV.
       // These are specific to the given file and should be changed for each file.
       // This is a *simple* way to help you get up and running quickly wihout being confusing
+      /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIX DATA
       String category[] = {
-         "_0_4",
-         "_5_9",
-         "_10_14",
-         "_15_19",
-         "_20_24",
-         "_25_29",
-         "_30_34",
-         "_35_39",
-         "_40_44",
-         "_45_49",
-         "_50_54",
-         "_55_59",
-         "_60_64",
-         "_65_yrs_ov"
+         "pd_gd_gc", //Postgraduate Degree Level, Graduate Diploma and Graduate Certificate Level
+         "bd", //Bachelor Degree Level
+         "adip_dip",// Advanced Diploma and Diploma Level
+         "ct_iii_iv",// Certificate III and IV Level
+         "ct_i_ii"// Certificate I and II Level
       };
       String status[] = {
          "indig",
@@ -65,38 +55,6 @@ public class VTPProcessCSV {
       String sex[] = {
          "f",
          "m"
-      };
-      int age_min[] = {
-         0,
-         5,
-         10,
-         15,
-         20,
-         25,
-         30,
-         35,
-         40,
-         45,
-         50,
-         55,
-         60,
-         65
-      };
-      int age_max[] = {
-         4,
-         9,
-         14,
-         19,
-         24,
-         29,
-         34,
-         39,
-         44,
-         49,
-         54,
-         59,
-         64,
-         200,
       };
 
       // JDBC Database Object
@@ -136,8 +94,7 @@ public class VTPProcessCSV {
             // Skip lga_name
             String lgaName = rowScanner.next();
 
-            // Fix the year
-            int year = 2016;
+            int year = 2021;//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// FIX YEAR
 
             // Go through the data for the row
             // If we run out of categories, stop for safety (so the code doesn't crash)
@@ -148,15 +105,13 @@ public class VTPProcessCSV {
                Statement statement = connection.createStatement();
 
                // Create Insert Statement
-               String query = "INSERT into Population VALUES ("
+               String query = "INSERT into Education_level (lga_code, lga_year, indigenous_status, sex, Category, count) VALUES ("
                               + lgaCode + ","
                               + year + ","
                               + "'" + status[indexStatus] + "',"
                               + "'" + sex[indexSex] + "',"
                               + "'" + category[indexCategory] + "',"
-                              + count + ","
-                              + age_min[indexCategory] + ","
-                              + age_max[indexCategory]
+                              + count
                               + ")";
 
                // Execute the INSERT
